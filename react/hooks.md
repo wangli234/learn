@@ -9,8 +9,8 @@
 ## 官方提供的基本hooks
 
 - [useState](#useState)
-- useEffect
-- useContext
+- [useEffect](#useEffect)
+- [useContext](#useContext)
 - useCallback
 - useRef
 - useReducer
@@ -20,6 +20,8 @@
 ---
 
 ### useState
+
+描述: 返回一个state，和一个更改state的函数
 
 基本用法
 ```
@@ -34,6 +36,46 @@ const [state, setState] = React.useState(initialValue)
 ```
 function App(){
     const [count, setCount] = React.useState(0)
+    return (
+        <div>
+            <h1>count的值为:{count}</h1>
+            <button onClick={()=>setCount(count+1)}>increment</button>
+        </div>
+    )
+}
+```
+---
+
+### useEffect
+
+描述:  useEffect 允许你使用副作用,在每次render之后执行, 允许你进行 事件订阅，事件监听等等操作
+
+- useEffect 有两个参数，第一个为函数，第二个参数为数组 或者不传
+- useEffect第一个参数为函数，允许返回一个函数 返回的函数相当于 `componentWillUnmount` 可以做一些销毁工作
+- 当useEffect没有第二个参数的时候，相当于实现了`componentDidMount` `componentDidUpdate`
+- 当第二个参数为空数组时，相当于 `componentDidMount`
+- 第二个参数数组可以依赖一些数据，如state,props，检测到数据的更新才会调用
+- 如果在useEffect里面更新state 注意不要死循环 一直更新数据，要检查第二个参数所依赖的数据
+
+**完整例子**
+```
+function App(){
+    const [count, setCount] = React.useState(0)
+    React.useEffect(() => {
+        console.log('componentDidMount')
+        return () => {
+            console.log('componentWillUnmount')
+        }
+    },[])
+
+    React.useEffect(() => {
+        console.log('count 更新了')
+    },[count])
+
+    React.useEffect(()=>{
+        console.log('componentDidUpdate')
+    })
+
     return (
         <div>
             <h1>count的值为:{count}</h1>
